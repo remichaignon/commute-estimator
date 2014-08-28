@@ -1,7 +1,7 @@
-var _ = require("underscore");
+var _ = require("underscore"),
+    FirebaseRSVP = require("firebase-rsvp");
 
-var FirebaseRSVP = require("./firebase-rsvp"),
-    Readings = require("./readings");
+var Readings = require("./readings");
 
 // URL
 // /commutes/home-to-work/{earliest_departure|latest_arrival|increment|duration_threshold}

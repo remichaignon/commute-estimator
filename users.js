@@ -1,6 +1,5 @@
-var _ = require("underscore");
-
-var FirebaseRSVP = require("./firebase-rsvp");
+var _ = require("underscore"),
+    FirebaseRSVP = require("firebase-rsvp");
 
 // URL
 // /users/jessica/{commutes|time_to_get_ready}

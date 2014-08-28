@@ -1,6 +1,5 @@
-var _ = require("underscore");
-
-var FirebaseRSVP = require("./firebase-rsvp");
+var _ = require("underscore"),
+    FirebaseRSVP = require("firebase-rsvp");
 
 // URL
 // /estimations/home-to-work/2014-08-21T06:00/{route_name|length|duration}

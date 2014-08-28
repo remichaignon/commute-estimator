@@ -7,7 +7,6 @@ var jsdom = require("jsdom"),
 var Commutes = require("./commutes"),
     // Estimations = require("./estimations"),
     // Experiments = require("./experiments"),
-    FirebaseRSVP = require("./firebase-rsvp"),
     Readings = require("./readings"),
     Users = require("./users");
 

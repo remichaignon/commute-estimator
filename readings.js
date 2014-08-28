@@ -1,10 +1,8 @@
-var _ = require("underscore");
-
-var jsdom = require("jsdom"),
+var _ = require("underscore"),
+    FirebaseRSVP = require("firebase-rsvp"),
+    jsdom = require("jsdom"),
     moment = require("moment"),
     RSVP = require("rsvp");
-
-var FirebaseRSVP = require("./firebase-rsvp");
 
 // URL
 // /readings/home-to-work/2014-08-21T06:00/{route_name|route_details|length|duration}
