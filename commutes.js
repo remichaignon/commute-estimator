@@ -1,5 +1,7 @@
 var _ = require("underscore"),
-    FirebaseRSVP = require("firebase-rsvp");
+    FirebaseRSVP = require("firebase-rsvp"),
+    RSVP = require("rsvp"),
+    schedule = require("node-schedule");
 
 var Readings = require("./readings");
 
@@ -17,72 +19,72 @@ var Readings = require("./readings");
 //     duration_threshold: 60
 // }
 
-var Commutes = function (databaseRootURL) {
-    this.path = "commutes";
-    this.uniqueKey = "name";
+var Commutes = _.extend({}, FirebaseRSVP, {
+    DEFAULT_ORIGIN: "2995+Eagle+Way+%2324,+Boulder,+CO,+USA",
+    DEFAULT_DESTINATION: "4200+E+Arkansas+Ave,+Denver,+CO+80222",
+    DEFAULT_EARLIEST_DEPARTURE: "06:00",
+    DEFAULT_LATEST_ARRIVAL: "09:00",
+    DEFAULT_INCREMENT: 10,
+    DEFAULT_DURATION_THRESHOLD: 60,
+    DEFAULT_COMMUTE: {
+        origin: this.DEFAULT_ORIGIN,
+        destination: this.DEFAULT_DESTINATION,
+        earliest_departure: this.DEFAULT_EARLIEST_DEPARTURE,
+        latest_arrival: this.DEFAULT_LATEST_ARRIVAL,
+        increment: this.DEFAULT_INCREMENT,
+        duration_threshold: this.DEFAULT_DURATION_THRESHOLD
+    },
+
+    namespace: "commutes",
+    uniqueKey: "name",
 
     // Commutes methods
 
-    this.get = function (uniqueKey) {
-        return _commutes.get(uniqueKey);
-    };
-    this.set = function (uniqueKey, options) {
-        return _commutes.set(uniqueKey, options);
-    };
-    this.update = function (uniqueKey, options) {
-        return _commutes.update(uniqueKey, options);
-    };
-    this.remove = function (uniqueKey) {
-        return _commutes.remove(uniqueKey);
-    };
-    this.create = function (uniqueKey, options) {
-        options = options || _.extend({}, DEFAULT_COMMUTE);
+    create: function (ref, uniqueKey, options) {
+        options = options || _.extend({}, this.DEFAULT_COMMUTE);
         options[this.uniqueKey] = uniqueKey;
 
-        return this.set(uniqueKey, options);
-    };
+        return this.set(ref, uniqueKey, options);
+    },
 
     // Reading-related methods
-    this.scheduleReadings = function (uniqueKey) {
-        return this.get(uniqueKey)
+
+    getEarliestDepartureForToday: function (earliestDepartureTime) {
+        return moment(earliestDepartureTime, "HH:mm");
+    },
+    getLatestArrivalForToday: function (latestArrivalTime) {
+        return moment(latestArrivalTime, "HH:mm");
+    },
+
+    scheduleTodaysReadingsForSingleCommute: function (ref, uniqueKey) {
+        return this.get(ref, uniqueKey)
             .then(function (commute) {
-                var earliestDeparture = commute.earliest_departure.split(":"),
-                    earliestDepartureHour = parseInt(earliestDeparture[0], 10),
-                    earliestDepartureMinute = parseInt(earliestDeparture[1], 10),
-                    latestArrival = commute.latest_arrival.split(":"),
-                    latestArrivalHour = parseInt(latestArrival[0], 10),
-                    latestArrivalMinute = parseInt(latestArrival[1], 10);
+                var scheduledTime = this.getEarliestDepartureForToday(commute.earliest_departure),
+                    latestArrival = this.getLatestArrivalForToday(commute.latest_arrival),
+                    increment = commute.increment;
 
-                // TODO: Use earliest minute + arrival minute + increment to figure out the scheduling
-                var rule = new schedule.RecurrenceRule();
-                rule.dayOfWeek = [0, new schedule.Range(0, 4)];
-                // rule.hour = [0, new schedule.Range(earliestDepartureHour, latestArrivalHour)];
-                // rule.minute = [0, new schedule.Range(0, 50)];
+                while (scheduledTime.isBefore(latestArrival)) {
+                    console.log(scheduledTime.toISOString());
+                    schedule.scheduleJob(scheduledTime.toDate(), function () {
+                        console.log("READING ESTIMATE @ " + (new Date()).getTime());
+                    });
 
-                var job = schedule.scheduleJob(rule, function () {
-                    _readings.readForCommute(commute);
-                });
-            });
-    };
+                    scheduledTime.add("minute", increment);
+                }
+            }.bind(this));
+    },
+    scheduleTodaysReadingsForAllCommutes: function (ref) {
+        var requests = [];
 
-    var _commutes = new FirebaseRSVP(databaseRootURL + this.path);
-    var _readings = new Readings(databaseRootURL);
+        return this.get(ref)
+            .then(function (commutes) {
+                commutes.forEach(function (commute) {
+                    requests.push(this.scheduleTodaysReadingsForSingleCommute(ref, commute[this.uniqueKey]));
+                }.bind(this));
 
-
-    var DEFAULT_ORIGIN = "2995+Eagle+Way+%2324,+Boulder,+CO,+USA";
-    var DEFAULT_DESTINATION = "4200+E+Arkansas+Ave,+Denver,+CO+80222";
-    var DEFAULT_EARLIEST_DEPARTURE = "06:00";
-    var DEFAULT_LATEST_ARRIVAL = "09:00";
-    var DEFAULT_INCREMENT = 10;
-    var DEFAULT_DURATION_THRESHOLD = 60;
-    var DEFAULT_COMMUTE = {
-        origin: DEFAULT_ORIGIN,
-        destination: DEFAULT_DESTINATION,
-        earliest_departure: DEFAULT_EARLIEST_DEPARTURE,
-        latest_arrival: DEFAULT_LATEST_ARRIVAL,
-        increment: DEFAULT_INCREMENT,
-        duration_threshold: DEFAULT_DURATION_THRESHOLD
-    };
-};
+                return RSVP.all(requests);
+            }.bind(this));
+    }
+});
 
 module.exports = Commutes;

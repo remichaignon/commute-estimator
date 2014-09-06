@@ -11,42 +11,43 @@ var _ = require("underscore"),
 //     commutes: {}
 // }
 
-FirebaseRSVP.namespace = "users";
-
-var Users = _.extend(FirebaseRSVP, {
+var Users = _.extend({}, FirebaseRSVP, {
     DEFAULT_TIME_TO_GET_READY: 30,
     DEFAULT_USER: { time_to_get_ready: this.DEFAULT_TIME_TO_GET_READY },
 
+    namespace: "users",
     uniqueKey: "username",
 
     // Users methods
 
     create: function (ref, uniqueKey, options) {
-        options = options || _.extend({}, DEFAULT_USER);
+        options = options || _.extend({}, this.DEFAULT_USER);
         options[this.uniqueKey] = uniqueKey;
 
-        return FirebaseRSVP.set(ref, uniqueKey, options);
+        return this.set(ref, uniqueKey, options);
     },
 
     // Commute-related methods
 
-    refToCommute: function (ref, uniqueKey) {
-        return ref.child([uniqueKey, "commutes"].join("/"));
+    getPathToAllCommutes: function (uniqueKey) {
+        return [uniqueKey, "commutes"];
     },
-    refToCommutes: function (ref, uniqueKey, commute) {
-        return ref.child([uniqueKey, "commutes", commute.name].join("/"));
-    },
-    addCommute: function (ref, uniqueKey, commute) {
-        return refToCommute(ref, uniqueKey).set(commute.name, true);
+    getPathToSingleCommute: function (uniqueKey, commute) {
+        return this.getPathToAllCommutes(uniqueKey).push(commute.name);
     },
     getCommutes: function (ref, uniqueKey) {
-        return refToCommutes()
+        return this.get(ref, this.getPathToAllCommutes(uniqueKey))
             .then(function (commutes) {
                 return Object.keys(commutes);
             });
     },
+    addCommute: function (ref, uniqueKey, commute) {
+        var pathToCommuteToAdd = this.getPathToSingleCommute(uniqueKey, commute);
+        return this.set(pathToCommuteToAdd, true);
+    },
     removeCommute: function (ref, uniqueKey, commute) {
-        return refToCommute(ref, uniqueKey, commute).remove();
+        var pathToCommuteToRemove = this.getPathToSingleCommute(uniqueKey, commute);
+        return this.remove(ref, pathToCommuteToRemove).remove();
     }
 });
 
