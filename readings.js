@@ -5,7 +5,7 @@ var _ = require("underscore"),
     RSVP = require("rsvp");
 
 // URL
-// /readings/home-to-work/2014-08-21T06:00/{route_name|route_details|length|duration}
+// /readings/home-to-work/2014-08-21/06:00/{route_name|route_details|length|duration}
 
 // FORMAT
 // {

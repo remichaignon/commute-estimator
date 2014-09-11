@@ -7,6 +7,7 @@ var Readings = require("./readings");
 
 // URL
 // /commutes/home-to-work/{earliest_departure|latest_arrival|increment|duration_threshold}
+// >>> Add owner's username to commute's name to make it unique?
 
 // FORMAT
 // {
@@ -56,6 +57,23 @@ var Commutes = _.extend({}, FirebaseRSVP, {
         return moment(latestArrivalTime, "HH:mm");
     },
 
+    scheduleReadingForSingleCommuteAt: function (ref, uniqueKey, date) {
+        console.log(date.toISOString());
+
+        // schedule.scheduleJob(date, function () {
+        //     console.log("READING ESTIMATE @ " + (new Date()).getTime());
+        // });
+
+        // The above solution fails for some reason
+        // The below solution is a hack to replace it
+
+        var rule = new schedule.RecurrenceRule();
+
+        var j = schedule.scheduleJob(rule, function(){
+            console.log("READING ESTIMATE @ " + (new Date()).getTime());
+            j.cancel();
+        });
+    },
     scheduleTodaysReadingsForSingleCommute: function (ref, uniqueKey) {
         return this.get(ref, uniqueKey)
             .then(function (commute) {
@@ -64,10 +82,7 @@ var Commutes = _.extend({}, FirebaseRSVP, {
                     increment = commute.increment;
 
                 while (scheduledTime.isBefore(latestArrival)) {
-                    console.log(scheduledTime.toISOString());
-                    schedule.scheduleJob(scheduledTime.toDate(), function () {
-                        console.log("READING ESTIMATE @ " + (new Date()).getTime());
-                    });
+                    this.scheduleReadingForSingleCommuteAt(ref, uniqueKey, scheduledTime.toDate());
 
                     scheduledTime.add("minute", increment);
                 }
