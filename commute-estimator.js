@@ -57,5 +57,5 @@ Commutes.create(ref, "test", {
         duration_threshold: 60
     })
     .then(function (test) {
-        return Commutes.scheduleTodaysReadingsForSingleCommute(ref, "test");
+        return Commutes.scheduleReadingForSingleCommuteAt(ref, test, moment().toDate());
     });

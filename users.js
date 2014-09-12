@@ -1,6 +1,8 @@
 var _ = require("underscore"),
     FirebaseRSVP = require("firebase-rsvp");
 
+var Commutes = require("./commutes");
+
 // URL
 // /users/jessica/{commutes|time_to_get_ready}
 
@@ -16,13 +18,12 @@ var Users = _.extend({}, FirebaseRSVP, {
     DEFAULT_USER: { time_to_get_ready: this.DEFAULT_TIME_TO_GET_READY },
 
     namespace: "users",
-    uniqueKey: "username",
 
     // Users methods
 
     create: function (ref, uniqueKey, options) {
         options = options || _.extend({}, this.DEFAULT_USER);
-        options[this.uniqueKey] = uniqueKey;
+        options.username = uniqueKey;
 
         return this.set(ref, uniqueKey, options);
     },
@@ -41,6 +42,7 @@ var Users = _.extend({}, FirebaseRSVP, {
                 return Object.keys(commutes);
             });
     },
+
     addCommute: function (ref, uniqueKey, commute) {
         var pathToCommuteToAdd = this.getPathToSingleCommute(uniqueKey, commute);
         return this.set(pathToCommuteToAdd, true);

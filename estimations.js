@@ -6,7 +6,7 @@ var _ = require("underscore"),
 
 // FORMAT
 // {
-// 	date: "2014-08-21T06:00",
+// 	date: "2014-08-21/06:00",
 // 	method: "naive-average",
 // 	route_name: "US 36",
 // 	length: 49,

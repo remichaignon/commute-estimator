@@ -2,7 +2,7 @@ var _ = require("underscore"),
     FirebaseRSVP = require("firebase-rsvp");
 
 // URL
-// /experiments/home-to-work/2014-08-21T06:00/{duration|route_name?}
+// /experiments/home-to-work/2014-08-21/06:00/{duration|route_name?}
 
 // FORMAT
 // {

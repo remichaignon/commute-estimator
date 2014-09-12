@@ -1,6 +1,5 @@
 var _ = require("underscore"),
     FirebaseRSVP = require("firebase-rsvp"),
-    RSVP = require("rsvp"),
     schedule = require("node-schedule");
 
 var Readings = require("./readings");
@@ -37,13 +36,12 @@ var Commutes = _.extend({}, FirebaseRSVP, {
     },
 
     namespace: "commutes",
-    uniqueKey: "name",
 
     // Commutes methods
 
     create: function (ref, uniqueKey, options) {
         options = options || _.extend({}, this.DEFAULT_COMMUTE);
-        options[this.uniqueKey] = uniqueKey;
+        options.name = uniqueKey;
 
         return this.set(ref, uniqueKey, options);
     },
@@ -57,8 +55,8 @@ var Commutes = _.extend({}, FirebaseRSVP, {
         return moment(latestArrivalTime, "HH:mm");
     },
 
-    scheduleReadingForSingleCommuteAt: function (ref, uniqueKey, date) {
-        console.log(date.toISOString());
+    scheduleReadingForSingleCommuteAt: function (ref, commute, date) {
+        console.log("SCHEDULING @", date.toISOString());
 
         // schedule.scheduleJob(date, function () {
         //     console.log("READING ESTIMATE @ " + (new Date()).getTime());
@@ -70,34 +68,28 @@ var Commutes = _.extend({}, FirebaseRSVP, {
         var rule = new schedule.RecurrenceRule();
 
         var j = schedule.scheduleJob(rule, function(){
-            console.log("READING ESTIMATE @ " + (new Date()).getTime());
+            console.log("READING @", (new Date()).toISOString());
+            Readings.readForCommute(ref, commute);
             j.cancel();
         });
     },
-    scheduleTodaysReadingsForSingleCommute: function (ref, uniqueKey) {
-        return this.get(ref, uniqueKey)
-            .then(function (commute) {
-                var scheduledTime = this.getEarliestDepartureForToday(commute.earliest_departure),
-                    latestArrival = this.getLatestArrivalForToday(commute.latest_arrival),
-                    increment = commute.increment;
+    scheduleTodaysReadingsForSingleCommute: function (ref, commute) {
+        var scheduledTime = this.getEarliestDepartureForToday(commute.earliest_departure),
+            latestArrival = this.getLatestArrivalForToday(commute.latest_arrival),
+            increment = commute.increment;
 
-                while (scheduledTime.isBefore(latestArrival)) {
-                    this.scheduleReadingForSingleCommuteAt(ref, uniqueKey, scheduledTime.toDate());
+        while (scheduledTime.isBefore(latestArrival)) {
+            this.scheduleReadingForSingleCommuteAt(ref, commute, scheduledTime.toDate());
 
-                    scheduledTime.add("minute", increment);
-                }
-            }.bind(this));
+            scheduledTime.add("minute", increment);
+        }
     },
     scheduleTodaysReadingsForAllCommutes: function (ref) {
-        var requests = [];
-
         return this.get(ref)
             .then(function (commutes) {
                 commutes.forEach(function (commute) {
-                    requests.push(this.scheduleTodaysReadingsForSingleCommute(ref, commute[this.uniqueKey]));
+                    this.scheduleTodaysReadingsForSingleCommute(ref, commute);
                 }.bind(this));
-
-                return RSVP.all(requests);
             }.bind(this));
     }
 });
