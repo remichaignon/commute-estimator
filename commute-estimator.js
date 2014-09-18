@@ -48,14 +48,7 @@ var ref = new Firebase(DB_ROOT_URL);
     //     return commutes.scheduleReadings(commute.name)
     // });
 
-Commutes.create(ref, "test", {
-        origin: "2995+Eagle+Way+%2324,+Boulder,+CO,+USA",
-        destination: "4200+E+Arkansas+Ave,+Denver,+CO+80222",
-        earliest_departure: "22:54",
-        latest_arrival: "23:30",
-        increment: 1,
-        duration_threshold: 60
-    })
+Commutes.get(ref, "test")
     .then(function (test) {
         return Commutes.scheduleReadingForSingleCommuteAt(ref, test, moment().toDate());
     });
