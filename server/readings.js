@@ -80,12 +80,16 @@ var Readings = _.extend({}, FirebaseRSVP, {
     getRouteDuration: function (route) {
         return route.find("span").text().split(":")[1].trim();
     },
+    getRouteDurationInMinutes: function (route) {
+        // TODO: Parse `getRouteDuration` and return a number in minutes
+        return this.getRouteDuration(route);
+    },
     parse: function (window) {
         var route = this.getRoute(window);
 
         return {
             route_name: this.getRouteName(route),
-            duration: this.getRouteDuration(route)
+            duration: this.getRouteDurationInMinutes(route)
         };
     },
 
