@@ -17,7 +17,6 @@ var _ = require("underscore"),
 //     duration: 45
 // }
 
-
 var Readings = _.extend({}, FirebaseRSVP, {
     BASE_URL: "https://www.google.com/maps/dir",
     ROUTE_SELECTOR: "#altroute_0 .dir-altroute-inner .altroute-aux",

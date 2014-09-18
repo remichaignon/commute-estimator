@@ -7,7 +7,7 @@ var jsdom = require("jsdom"),
 
 var Commutes = require("./commutes"),
     // Estimations = require("./estimations"),
-    // Experiments = require("./experiments"),
+    // Experiences = require("./experiences"),
     Readings = require("./readings"),
     Users = require("./users");
 
@@ -59,3 +59,22 @@ Commutes.create(ref, "test", {
     .then(function (test) {
         return Commutes.scheduleReadingForSingleCommuteAt(ref, test, moment().toDate());
     });
+
+// EVERY DAY  - 1 AM
+
+// Schedule mornings
+// Schedule evenings
+
+// MORNINGS - 12 PM (NOON)
+
+// Schedule mornings commutes readings
+// (Schedule mornings commutes experiences acquisitions)
+// Schedule mornings commutes estimations
+// Schedule mornings commutes analytics
+
+// EVENINGS - 12 AM (MIDNIGHT)
+
+// Schedule evenings commutes readings
+// (Schedule evenings commutes experiences acquisitions)
+// Schedule evenings commutes estimations
+// Schedule evenings commutes analytics
