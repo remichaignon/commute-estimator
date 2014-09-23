@@ -12,7 +12,7 @@ export default Ember.Controller.extend({
             this.store
                 .find("user", this.get("username"))
                 .then(function (user) {
-                    this.set("user", user.get("username"));
+                    this.transitionToRoute("user", user);
                 }.bind(this));
         }
     }

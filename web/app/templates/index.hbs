@@ -1,5 +1,10 @@
-<h3>Who are you?</h3>
-{{input id="username" value=username}}
-<label for="username">Username</label>
-<button id="start" {{action "start"}}>Start</button>
-{{user}}
+<form class="pure-form pure-form-stacked" {{action "start" on="submit"}}>
+    <fieldset>
+        <legend>Who are you?</legend>
+
+        <label for="username">Username</label>
+        <input id="username" type="text" placeholder="Username">
+
+        <button id="start" type="submit" class="pure-button pure-button-primary">Start</button>
+    </fieldset>
+</form>
