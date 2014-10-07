@@ -1,8 +1,8 @@
 # Commute Estimator
 
-* Path to 0.1.0:
+## Path to 0.1.0:
 
-## Server
+### Server
 
 - [ ] Find a place to host it
 - [ ] Find a way to easily deploy it
@@ -10,7 +10,7 @@
 - [ ] Translate it to PureScript
 - [ ] Build build and deploy pipeline
 
-## Web
+### Web
 
 - [ ] Create a way to add (and edit) users
 - [ ] Create a way to add (and edit) commutes
