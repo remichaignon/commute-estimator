@@ -2,12 +2,12 @@
     <fieldset>
         <div class="pure-control-group">
             <label for="name">Username</label>
-            {{input id="name" type="text" placeholder="Username" value=username readonly=true}}
+            {{input id="name" type="text" placeholder="Username" value=model.username readonly=readOnly}}
         </div>
 
         <div class="pure-control-group">
             <label for="password">Time to get ready</label>
-            {{input id="time_to_get_ready" type="text" placeholder="Time to get ready" value=time_to_get_ready readonly=true}}
+            {{input id="time_to_get_ready" type="text" placeholder="Time to get ready" value=model.time_to_get_ready readonly=readOnly}}
         </div>
     </fieldset>
 </form>
