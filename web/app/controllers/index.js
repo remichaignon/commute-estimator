@@ -9,11 +9,7 @@ export default Ember.Controller.extend({
                 throw new Error("ERROR - User invalid.");
             }
 
-            this.store
-                .find("user", this.get("username"))
-                .then(function (user) {
-                    this.transitionToRoute("user", user);
-                }.bind(this));
+            this.transitionToRoute("users.user", this.get("username"));
         }
     }
 });

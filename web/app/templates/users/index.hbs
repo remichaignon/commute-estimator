@@ -1,0 +1,24 @@
+{{#link-to "users.new" classNames="pure-button pure-button-primary"}}
+    <i class="fa fa-plus"></i>
+    Add user
+{{/link-to}}
+
+<table class="pure-table">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>Time to get ready</th>
+            <th>Created at</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {{#each model}}
+            <tr class="-pure-table-odd">
+                <td>{{username}}</td>
+                <td>{{time_to_get_ready}}</td>
+                <td>{{created_at}}</td>
+            </tr>
+        {{/each}}
+    </tbody>
+</table>
