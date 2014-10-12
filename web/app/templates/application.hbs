@@ -1,3 +1,17 @@
-<h1 id="title">Welcome fellow commuter !</h1>
+<div class="header">
+    <div class="home-menu pure-menu pure-menu-open pure-menu-horizontal pure-menu-fixed">
+        <a class="pure-menu-heading" href="/">Commute Estimator</a>
+        {{#if controller.session.user}}
+            <span class="pure-menu-heading right">Hello, {{controller.session.user}}</span>
+        {{else}}
+            <form class="pure-form right" {{action "start" on="submit"}}>
+                <fieldset>
+                    {{input id="username" value=username type="text" placeholder="Username"}}
+                    <button id="start" type="submit" class="pure-button pure-button-primary">Start</button>
+                </fieldset>
+            </form>
+        {{/if}}
+    </div>
+</div>
 
 {{outlet}}
