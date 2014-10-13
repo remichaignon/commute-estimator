@@ -1,3 +1,23 @@
-<h1>Users</h1>
+<table class="pure-table">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>Time to get ready</th>
+            <th>Created at</th>
+        </tr>
+    </thead>
 
-{{outlet}}
+    <tbody>
+        {{#each model}}
+            <tr class="-pure-table-odd">
+                <td>{{username}}</td>
+                <td>{{time_to_get_ready}}</td>
+                <td>{{created_at}}</td>
+            </tr>
+        {{else}}
+            <tr>
+                <td colspan="3">No user available</td>
+            </tr>
+        {{/each}}
+    </tbody>
+</table>

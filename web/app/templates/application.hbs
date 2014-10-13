@@ -2,7 +2,11 @@
     <div class="home-menu pure-menu pure-menu-open pure-menu-horizontal pure-menu-fixed">
         <a class="pure-menu-heading" href="/">Commute Estimator</a>
         {{#if controller.session.user}}
-            <span class="pure-menu-heading right">Hello, {{controller.session.user}}</span>
+            <div class="pure-menu-heading right">
+                Hello, {{controller.session.user}}
+                <div class="pure-u-1-24"></div>
+                <button class="pure-button button-small" {{action "stop" on="click"}}>Logout</button>
+            </div>
         {{else}}
             <form class="pure-form right" {{action "start" on="submit"}}>
                 <fieldset>
@@ -14,4 +18,6 @@
     </div>
 </div>
 
-{{outlet}}
+<div class="top">
+    {{outlet}}
+</div>
