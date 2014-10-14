@@ -1,0 +1,54 @@
+{{#with model}}
+    <form class="pure-form pure-form-aligned" {{action "save" on="submit"}}>
+        <fieldset>
+            <div class="pure-control-group">
+                <label for="name">Name</label>
+                {{input id="name" type="text" placeholder="Name" value=id readonly=true}}
+            </div>
+
+            <div class="pure-control-group">
+                <label for="name">User</label>
+                {{input id="user" type="text" placeholder="User" value=user.id readonly=true}}
+            </div>
+
+            <div class="pure-control-group">
+                <label for="password">Origin</label>
+                {{input id="origin" type="text" placeholder="Origin (as in Google Maps URL)" value=origin readonly=controller.readOnly}}
+            </div>
+
+            <div class="pure-control-group">
+                <label for="password">Destination</label>
+                {{input id="destination" type="text" placeholder="Destination (as in Google Maps URL)" value=destination readonly=controller.readOnly}}
+            </div>
+
+            <div class="pure-control-group">
+                <label for="password">Earliest Departure</label>
+                {{input id="earliest-departure" type="text" placeholder="Earliest Departure (HH:mm)" value=earliest_departure readonly=controller.readOnly}}
+            </div>
+
+            <div class="pure-control-group">
+                <label for="password">Latest Arrival</label>
+                {{input id="latest-arrival" type="text" placeholder="Latest Arrival (HH:mm)" value=latest_arrival readonly=controller.readOnly}}
+            </div>
+
+            <div class="pure-control-group">
+                <label for="password">Increment</label>
+                {{input id="increment" type="text" placeholder="Increment (in minutes)" value=increment readonly=controller.readOnly}}
+            </div>
+
+            <div class="pure-control-group">
+                <label for="password">Duration Threshold</label>
+                {{input id="duration-threshold" type="text" placeholder="Duration Threshold (in minutes)" value=duration_threshold readonly=controller.readOnly}}
+            </div>
+
+            <div class="pure-control-group">
+                <label for="password">Created At</label>
+                {{input id="created-at" type="text" placeholder="Created At" value=created_at readonly=controller.readOnly}}
+            </div>
+
+            {{#unless controller.readOnly}}
+                <button type="submit" class="pure-button pure-button-primary">Save</button>
+            {{/unless}}
+        </fieldset>
+    </form>
+{{/with}}

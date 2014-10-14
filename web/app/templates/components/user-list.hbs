@@ -1,0 +1,25 @@
+<h2>Users</h2>
+
+<table class="pure-table pure-table-bordered">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>Time to get ready</th>
+            <th>Created at</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {{#each users}}
+            <tr class="-pure-table-odd">
+                <td>{{#link-to "user" id}}{{id}}{{/link-to}}</td>
+                <td>{{time_to_get_ready}}</td>
+                <td>{{created_at}}</td>
+            </tr>
+        {{else}}
+            <tr>
+                <td colspan="3">No user available</td>
+            </tr>
+        {{/each}}
+    </tbody>
+</table>

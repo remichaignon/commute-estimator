@@ -10,9 +10,9 @@ export default Ember.Route.extend({
     },
 
     model: function (params) {
-        var username = params.username;
+        var name = params.name;
 
-        return this.store.find("user", username)
-            .catch(function () { return this.store.createRecord("user", { id: username }); }.bind(this));
+        return this.store.find("commute", name)
+            .catch(function () { return this.store.createRecord("commute", { id: name }); }.bind(this));
     }
 });
