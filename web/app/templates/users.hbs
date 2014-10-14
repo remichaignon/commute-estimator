@@ -10,7 +10,7 @@
     <tbody>
         {{#each model}}
             <tr class="-pure-table-odd">
-                <td>{{username}}</td>
+                <td>{{#link-to "user" id}}{{id}}{{/link-to}}</td>
                 <td>{{time_to_get_ready}}</td>
                 <td>{{created_at}}</td>
             </tr>
