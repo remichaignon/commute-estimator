@@ -6,5 +6,7 @@ export default DS.Model.extend({
     route_name: DS.attr("string"),
     route_details: DS.attr("string"),
     length: DS.attr("number"),
-    duration: DS.attr("number")
+    duration: DS.attr("number"),
+
+    commute: DS.belongsTo("commute", { async: true })
 });

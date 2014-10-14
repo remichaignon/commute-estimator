@@ -9,5 +9,6 @@ export default DS.Model.extend({
     duration_threshold: DS.attr("number"),
     created_at: DS.attr("date"),
 
-    user: DS.belongsTo("user", { async: true })
+    user: DS.belongsTo("user", { async: true }),
+    readings: DS.hasMany("reading", { async: true })
 });
