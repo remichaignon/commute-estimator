@@ -3,20 +3,25 @@
 <table class="pure-table pure-table-bordered">
     <thead>
         <tr>
-            <th>Date</th>
+            <th>Local Date</th>
             {{#if showRelationship}}<th>Commute</th>{{/if}}
+            <th>Day Of The Week</th>
+            <th>Route Name</th>
+            <th>Duration</th>
         </tr>
     </thead>
 
     <tbody>
-        {{#each commutes}}
+        {{#each readings itemController="readingItem"}}
             <tr class="-pure-table-odd">
-                <td>{{#link-to "commute" id}}{{id}}{{/link-to}}</td>
-                {{#if showRelationship}}<td>{{#link-to "user" user.id}}{{user.id}}{{/link-to}}</td>{{/if}}
+                <td>{{local_datetime}}</td>
+                <td>{{localDayOfTheWeek}}</td>
+                <td>{{route_name}}</td>
+                <td>{{duration}}</td>
             </tr>
         {{else}}
             <tr>
-                <td colspan="3">No reading available</td>
+                <td colspan="100">No reading available</td>
             </tr>
         {{/each}}
     </tbody>
