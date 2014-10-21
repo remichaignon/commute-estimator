@@ -22,4 +22,14 @@ app.import({
     production: "bower_components/pure/pure-min.css"
 })
 
+app.import({
+    development: "bower_components/d3/d3.js",
+    production: "bower_components/d3/d3.min.js"
+})
+
+app.import({
+    development: "bower_components/moment/moment.js",
+    production: "bower_components/moment/min/moment.min.js"
+})
+
 module.exports = app.toTree();
