@@ -13,7 +13,6 @@ export default Ember.Component.extend({
     tagName: 'svg',
 
     readings: null,
-    paths: [],
 
     width:  900,
     height: 300,
@@ -30,36 +29,34 @@ export default Ember.Component.extend({
             return;
         }
 
-        var WIDTH = this.get("width");
-        var HEIGHT = this.get("height");
-        var MARGINS = this.get("margin");
-
-        var element = this.$();
-        var data = this.get("readings").toArray();
+        var width = this.get("width"),
+            height = this.get("height"),
+            margins = this.get("margin"),
+            readings = this.get("readings").toArray();
 
         var xRange = d3.scale
             .linear()
-            .range([MARGINS.left, WIDTH - MARGINS.right])
-            .domain([d3.min(data, function(d) {
+            .range([margins.left, width - margins.right])
+            .domain([d3.min(readings, function (d) {
                 return toDecimalTime(d.get("local_time"));
-            }), d3.max(data, function(d) {
+            }), d3.max(readings, function (d) {
                 return toDecimalTime(d.get("local_time"));
             })]);
         var yRange = d3.scale
             .linear()
-            .range([HEIGHT - MARGINS.top, MARGINS.bottom])
-            .domain([0, d3.max(data, function(d) {
+            .range([height - margins.top, margins.bottom])
+            .domain([0, d3.max(readings, function (d) {
                 return d.get("duration");
             })]);
-        var xAxis = d3.svg.axis()
-            .scale(xRange)
-            .tickSize(5)
-            .tickSubdivide(true);
-        var yAxis = d3.svg.axis()
-            .scale(yRange)
-            .tickSize(5)
-            .orient('left')
-            .tickSubdivide(true);
+        // var xAxis = d3.svg.axis()
+        //     .scale(xRange)
+        //     .tickSize(5)
+        //     .tickSubdivide(true);
+        // var yAxis = d3.svg.axis()
+        //     .scale(yRange)
+        //     .tickSize(5)
+        //     .orient('left')
+        //     .tickSubdivide(true);
 
         // element.append('svg:g')
         //     .attr('class', 'x axis')
@@ -71,18 +68,18 @@ export default Ember.Component.extend({
         //     .attr('transform', 'translate(' + (MARGINS.left) + ',0)')
         //     .call(yAxis);
 
-        var paths = [],
-            pathIndex = -1,
+        var readingsByDay = [],
+            readingsByDayIndex = -1,
             previousLocalDate = "";
 
-        data.forEach(function (item) {
+        readings.forEach(function (item) {
             if (item.get("local_date") !== previousLocalDate) {
-                paths.push([]);
+                readingsByDay.push([]);
                 previousLocalDate = item.get("local_date");
-                pathIndex++;
+                readingsByDayIndex++;
             }
 
-            paths[pathIndex].push(item);
+            readingsByDay[readingsByDayIndex].push(item);
         });
 
         var lineFunc = d3.svg.line()
@@ -92,19 +89,27 @@ export default Ember.Component.extend({
             .y(function(d) {
                 return yRange(d.get("duration"));
             })
-            .interpolate('linear');
+            .interpolate("linear");
 
-        paths = paths.map(function (item) {
-            return { path: lineFunc(item) };
-        });
+        var svg = d3
+            .select(this.$()[0])
+            .style("width", width)
+            .style("height", height);
 
-        this.set("paths", paths);
+        var reading = svg
+            .selectAll(".reading")
+            .data(readingsByDay)
+            .enter()
+            .append("g")
+            .attr("class", "reading");
+
+        reading.append("path")
+            .attr("class", "line")
+            .attr("d", function (d) { return lineFunc(d); })
+            .style("stroke", "blue");
     },
 
     onDidInsertElement: function() {
-        // this.set("width", this.$().width());
-        // this.set("height", this.$().height());
-
         this.drawGraph();
     }.on("didInsertElement"),
     onReadingsChange: function () {
