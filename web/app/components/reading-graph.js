@@ -68,25 +68,38 @@ export default Ember.Component.extend({
         //     .attr('transform', 'translate(' + (MARGINS.left) + ',0)')
         //     .call(yAxis);
 
-        var readingsByDay = [],
-            readingsByDayIndex = -1,
-            previousLocalDate = "";
+        var readingsByDay = d3.nest()
+            .key(function (d) {
+                return d.get("local_date");
+            })
+            .map(readings, d3.map)
+            .values();
 
-        readings.forEach(function (item) {
-            if (item.get("local_date") !== previousLocalDate) {
-                readingsByDay.push([]);
-                previousLocalDate = item.get("local_date");
-                readingsByDayIndex++;
-            }
+        var meanByTime = d3.nest()
+            .key(function (d) {
+                return d.get("local_time");
+            })
+            .rollup(function (d) {
+                return d3.mean(d, function (a) {
+                    return a.get("duration");
+                });
+            })
+            .map(readings, d3.map);
 
-            readingsByDay[readingsByDayIndex].push(item);
+        meanByTime.forEach(function (key, value) {
+            this.set(key, Ember.Object.create({
+                local_time: key,
+                duration: value
+            }));
         });
 
+        meanByTime = meanByTime.values();
+
         var lineFunc = d3.svg.line()
-            .x(function(d) {
+            .x(function (d) {
                 return xRange(toDecimalTime(d.get("local_time")));
             })
-            .y(function(d) {
+            .y(function (d) {
                 return yRange(d.get("duration"));
             })
             .interpolate("linear");
@@ -107,12 +120,21 @@ export default Ember.Component.extend({
             .attr("class", "line")
             .attr("d", function (d) { return lineFunc(d); })
             .style("stroke", "blue");
+
+        var average = svg
+            .selectAll(".average")
+            .data([meanByTime])
+            .enter()
+            .append("g")
+            .attr("class", "average");
+
+        average.append("path")
+            .attr("class", "line")
+            .attr("d", function (d) { return lineFunc(d); })
+            .style("stroke", "red");
     },
 
-    onDidInsertElement: function() {
-        this.drawGraph();
-    }.on("didInsertElement"),
     onReadingsChange: function () {
         this.drawGraph();
-    }.observes("readings.length")
+    }.observes("readings.length").on("didInsertElement")
 });
