@@ -122,13 +122,8 @@ export default Ember.Component.extend({
             .style("stroke", "blue");
 
         var average = svg
-            .selectAll(".average")
-            .data([meanByTime])
-            .enter()
-            .append("g")
-            .attr("class", "average");
-
-        average.append("path")
+            .append("path")
+            .datum(meanByTime)
             .attr("class", "line")
             .attr("d", function (d) { return lineFunc(d); })
             .style("stroke", "red");
