@@ -48,25 +48,27 @@ export default Ember.Component.extend({
             .domain([0, d3.max(readings, function (d) {
                 return d.get("duration");
             })]);
-        // var xAxis = d3.svg.axis()
-        //     .scale(xRange)
-        //     .tickSize(5)
-        //     .tickSubdivide(true);
-        // var yAxis = d3.svg.axis()
-        //     .scale(yRange)
-        //     .tickSize(5)
-        //     .orient('left')
-        //     .tickSubdivide(true);
+        var xAxis = d3.svg.axis()
+            .scale(xRange)
+            .tickSize(5)
+            .tickSubdivide(true);
+        var yAxis = d3.svg.axis()
+            .scale(yRange)
+            .tickSize(5)
+            .orient('left')
+            .tickSubdivide(true);
 
-        // element.append('svg:g')
-        //     .attr('class', 'x axis')
-        //     .attr('transform', 'translate(0,' + (HEIGHT - MARGINS.bottom) + ')')
-        //     .call(xAxis);
-        //
-        // element.append('svg:g')
-        //     .attr('class', 'y axis')
-        //     .attr('transform', 'translate(' + (MARGINS.left) + ',0)')
-        //     .call(yAxis);
+        d3.select(this.$()[0])
+            .append('svg:g')
+            .attr('class', 'x axis')
+            .attr('transform', 'translate(0,' + (height - margins.bottom) + ')')
+            .call(xAxis);
+
+        d3.select(this.$()[0])
+            .append('svg:g')
+            .attr('class', 'y axis')
+            .attr('transform', 'translate(' + (margins.left) + ',0)')
+            .call(yAxis);
 
         var readingsByDay = d3.nest()
             .key(function (d) {
